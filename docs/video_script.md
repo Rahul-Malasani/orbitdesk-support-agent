@@ -8,12 +8,17 @@ that pauses between sections — you talk, then press Enter. Talking points are
 
 ## Pre-flight (before you hit record)
 
+- [ ] **Activate the venv FIRST:** `source .venv/bin/activate` — your prompt shows
+      `(.venv)` and now `python` and `pytest` both work. (Without this, `python` is
+      not found and system `python3` has no pytest.)
 - [ ] Ollama running, model present: `ollama list` shows `gemma3:4b`
 - [ ] Embeddings warm (so no 30s download on camera): run `python -m scripts.demo` once, quit after section 0
 - [ ] Terminal font large (⌘+ a few times), window wide, other apps closed
 - [ ] Have `docs/graph.png` open in an image viewer, ready to Alt-Tab to
-- [ ] Activate the env: `source .venv/bin/activate`
 - [ ] One rehearsal run-through. One.
+
+> Every command below assumes the venv is active. If you skip activation, prefix
+> each with the full path instead, e.g. `.venv/bin/python -m pytest -v`.
 
 Opening line (5 sec): *"This is a local-first OrbitDesk support agent — a LangGraph
 pipeline over local Hugging Face and Ollama models, no cloud LLM calls."*
