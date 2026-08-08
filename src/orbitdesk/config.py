@@ -7,7 +7,12 @@ you to reason about.
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
+
+# Silence the tokenizers fork warning (we call subprocess/httpx after the
+# embedding model has loaded); it is cosmetic and clutters logs.
+os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
 # --- Filesystem paths -------------------------------------------------------
 # repo_root/src/orbitdesk/config.py -> repo_root
