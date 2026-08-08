@@ -120,45 +120,57 @@ def _split_answer_and_sources(
 # --------------------------------------------------------------------------- #
 # Per-route generators
 # --------------------------------------------------------------------------- #
-def _generate_with_llm(instruction: str, question: str, hits: list[Retrieved], llm: OllamaLLM) -> Generation:
+def _generate_with_llm(
+    instruction: str,
+    question: str,
+    hits: list[Retrieved],
+    llm: OllamaLLM,
+    feedback: str | None = None,
+) -> Generation:
     grounding = _grounding_hits(hits)
+    if feedback:
+        instruction += (
+            f"\n\nA previous attempt FAILED verification for these reasons: {feedback}. "
+            "Correct them: every claim must be supported by the evidence above, cite the "
+            "source_ids, and do not add steps that are not in the evidence."
+        )
     prompt = (
         f"<user_question>\n{question}\n</user_question>\n\n"
         f"<evidence>\n{_evidence_block(grounding)}\n</evidence>\n\n"
         f"{instruction}"
     )
-    raw = llm.generate(prompt, system=_SYSTEM, temperature=0.0, num_predict=400)
+    raw = llm.generate(prompt, system=_SYSTEM, temperature=0.1, num_predict=400)
     answer, sources, warnings = _split_answer_and_sources(raw, grounding)
     return Generation(answer=answer, sources=sources, warnings=warnings)
 
 
-def generate_answer(question, hits, llm) -> Generation:
+def generate_answer(question, hits, llm, feedback=None) -> Generation:
     return _generate_with_llm(
         "Write a concise, accurate support answer using ONLY the evidence above. "
         "Then on a final line write 'SOURCES:' followed by the source_ids you used.",
-        question, hits, llm,
+        question, hits, llm, feedback,
     )
 
 
-def generate_escalation(question, hits, llm) -> Generation:
+def generate_escalation(question, hits, llm, feedback=None) -> Generation:
     return _generate_with_llm(
         "This issue requires escalation to a human team. Using ONLY the evidence: "
         "(1) briefly restate the problem, (2) state that it should be escalated, "
         "(3) list ONLY the safe diagnostic details to collect, and (4) name the team "
         "if the evidence states one. Do not promise a resolution time. "
         "Then on a final line write 'SOURCES:' followed by the source_ids you used.",
-        question, hits, llm,
+        question, hits, llm, feedback,
     )
 
 
-def generate_clarification(question, hits, llm) -> Generation:
+def generate_clarification(question, hits, llm, feedback=None) -> Generation:
     return _generate_with_llm(
         "The question is missing specific details needed to proceed. Using ONLY the "
         "evidence, ask the user a concise clarification question naming the exact "
         "information required (for example the specific IDs, states, or error codes "
         "the documentation lists). Do not attempt an answer. "
         "Then on a final line write 'SOURCES:' followed by the source_ids you used.",
-        question, hits, llm,
+        question, hits, llm, feedback,
     )
 
 
@@ -184,16 +196,20 @@ def safe_refusal(triage_result: TriageResult) -> Generation:
 # Dispatch
 # --------------------------------------------------------------------------- #
 def generate_response(
-    triage_result: TriageResult, question: str, hits: list[Retrieved], llm: OllamaLLM
+    triage_result: TriageResult,
+    question: str,
+    hits: list[Retrieved],
+    llm: OllamaLLM,
+    feedback: str | None = None,
 ) -> Generation:
     route = triage_result.classification
     if route == "out_of_scope":
         return safe_refusal(triage_result)
     if route == "requires_escalation":
-        return generate_escalation(question, hits, llm)
+        return generate_escalation(question, hits, llm, feedback)
     if route == "requires_clarification":
-        return generate_clarification(question, hits, llm)
-    return generate_answer(question, hits, llm)  # answerable
+        return generate_clarification(question, hits, llm, feedback)
+    return generate_answer(question, hits, llm, feedback)  # answerable
 
 
 if __name__ == "__main__":
