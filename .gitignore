@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+
+# Downloaded model cache (do not commit models or secrets)
+models_cache/
+*.safetensors
+*.bin
+
+# Local run artifacts
+*.log
+
+# Derived index artifacts (regenerate with `python -m scripts.ingest` +
+# the retriever). The embeddings blob especially does not belong in git.
+index/
