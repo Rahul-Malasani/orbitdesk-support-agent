@@ -1,27 +1,27 @@
 flowchart TD
     Q([User asks a question]) --> R[retrieve]:::model
-    R --> T{triage}:::mixed
+    R --> T{triage:<br/>classify request}:::mixed
 
+    %% ---- the four classification routes ----
     T -->|out of scope / forbidden| RF[refuse]:::code
     T -->|answerable| G[generate]:::model
     T -->|needs clarification| G
     T -->|requires escalation| G
 
-    RF --> V{verify}:::code
+    RF --> V
     G --> V
 
-    V -->|pass| DONE([Return response]):::done
-    V -->|fail · retry once| RV[revise]:::code
-    V -->|still fails| SF[safe_fail]:::code
-    RV --> G
-    SF --> DONE
-
-    subgraph Legend [ ]
-      direction LR
-      L1[deterministic code]:::code
-      L2[local model]:::model
-      L3[code + model]:::mixed
+    %% ---- verification / retry / fallback, grouped at the bottom ----
+    subgraph BOTTOM [Verification and retry]
+      direction TB
+      V{verify}:::code
+      V -->|fail · under retry limit| RV[revise and retry]:::code
+      V -->|fail again| SF[safe_fail]:::code
     end
+
+    V -->|pass| DONE([return response]):::done
+    RV -->|regenerate once| G
+    SF --> DONE
 
     classDef code fill:#e6f4ea,stroke:#137333,color:#0d652d
     classDef model fill:#e8f0fe,stroke:#1a73e8,color:#174ea6
