@@ -12,6 +12,23 @@ is plain Python.
 
 ---
 
+## Video walkthrough
+
+**▶ https://www.youtube.com/watch?v=rka0aXDHelI** (9:40)
+
+| Time | Chapter |
+|---|---|
+| 0:00 | Overview & the graph |
+| 1:26 | Retrieval (embeddings & search) |
+| 2:40 | Triage — the four routes |
+| 4:36 | Verification, retry & safe-failure |
+| 6:06 | Limitations & improvements |
+| 6:44 | Hardware & model loading |
+| 7:28 | Live runs — the five questions |
+| 9:07 | Tests & closing |
+
+---
+
 ## What it does
 
 A user asks a support question in natural language. The graph:
