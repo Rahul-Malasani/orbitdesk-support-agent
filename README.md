@@ -27,8 +27,9 @@ Auto-generated from the compiled graph:
 
 ![Agent graph](docs/graph.png)
 
-Annotated with each node's responsibility (green = deterministic code, blue =
-local model, amber = both) — see [`docs/graph_annotated.png`](docs/graph_annotated.png):
+The distinct path each request takes (green = deterministic code, blue = local
+model, amber = both). Full per-node detail in
+[`docs/graph_explained.md`](docs/graph_explained.md):
 
 ![Annotated agent graph](docs/graph_annotated.png)
 

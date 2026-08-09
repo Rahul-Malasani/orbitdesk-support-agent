@@ -15,38 +15,34 @@ from src.orbitdesk import config
 DOCS = config.REPO_ROOT / "docs"
 
 MERMAID = r"""flowchart TD
-    START([START]) --> R
+    Q([User asks a question]) --> R[retrieve]:::model
+    R --> T{triage}:::mixed
 
-    R["<b>retrieve</b><br/>Embed the question, return the<br/>top-5 passages by cosine similarity"]:::model
-    R --> T
+    T -->|out of scope / forbidden| RF[refuse]:::code
+    T -->|answerable| G[generate]:::model
+    T -->|needs clarification| G
+    T -->|requires escalation| G
 
-    T["<b>triage</b> — pick ONE route<br/>1) safety gate  2) score floor<br/>3) escalation rule  = deterministic<br/>4) Gemma: answerable vs clarification"]:::mixed
-
-    T -->|out_of_scope| RF["<b>refuse</b><br/>Fixed safe refusal<br/>(no model call)"]:::code
-    T -->|"answerable / clarification / escalation"| G["<b>generate</b><br/>Gemma writes from evidence ONLY<br/>prompt isolation + code-validated citations<br/>(superseded passages filtered out)"]:::model
-
-    RF --> V
+    RF --> V{verify}:::code
     G --> V
 
-    V["<b>verify</b> — deterministic checks<br/>schema · citations exist · grounded<br/>· no forbidden/superseded content"]:::code
-
-    V -->|pass| ACC([END — accept])
-    V -->|"fail &amp; revisions &lt; max"| RV["<b>revise</b><br/>Feed the failure reasons back,<br/>increment the revision counter"]:::code
-    V -->|"fail &amp; at max revisions"| SF["<b>safe_fail</b><br/>Return the safe_failure response"]:::code
-
+    V -->|pass| DONE([Return response]):::done
+    V -->|fail · retry once| RV[revise]:::code
+    V -->|still fails| SF[safe_fail]:::code
     RV --> G
-    SF --> SFE([END — safe failure])
+    SF --> DONE
 
     subgraph Legend [ ]
       direction LR
-      L1["deterministic code"]:::code
-      L2["local model"]:::model
-      L3["code + model"]:::mixed
+      L1[deterministic code]:::code
+      L2[local model]:::model
+      L3[code + model]:::mixed
     end
 
     classDef code fill:#e6f4ea,stroke:#137333,color:#0d652d
     classDef model fill:#e8f0fe,stroke:#1a73e8,color:#174ea6
     classDef mixed fill:#fef7e0,stroke:#f9ab00,color:#b06000
+    classDef done fill:#f3e8fd,stroke:#8430ce,color:#5b1a95
 """
 
 
