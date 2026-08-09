@@ -23,7 +23,14 @@ A user asks a support question in natural language. The graph:
 
 ### The graph
 
+Auto-generated from the compiled graph:
+
 ![Agent graph](docs/graph.png)
+
+Annotated with each node's responsibility (green = deterministic code, blue =
+local model, amber = both) — see [`docs/graph_annotated.png`](docs/graph_annotated.png):
+
+![Annotated agent graph](docs/graph_annotated.png)
 
 ```
 START → retrieve → triage ─┬─(out_of_scope)→ refuse ─┐
