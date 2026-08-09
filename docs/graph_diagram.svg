@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 840" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5f6368"/>
+    </marker>
+  </defs>
+  <style>
+    .edge { stroke:#5f6368; stroke-width:1.6; fill:none; marker-end:url(#arrow); }
+    .nlabel { font-size:15px; font-weight:600; text-anchor:middle; dominant-baseline:middle; }
+    .elabel { font-size:12.5px; fill:#3c4043; text-anchor:middle; dominant-baseline:middle; }
+    .elabelbg { fill:#ffffff; opacity:0.92; }
+    .box { stroke-width:1.8; }
+    .code  { fill:#e6f4ea; stroke:#137333; }  .code-t  { fill:#0d652d; }
+    .model { fill:#e8f0fe; stroke:#1a73e8; }  .model-t { fill:#174ea6; }
+    .mixed { fill:#fef7e0; stroke:#f9ab00; }  .mixed-t { fill:#b06000; }
+    .done  { fill:#f3e8fd; stroke:#8430ce; }  .done-t  { fill:#5b1a95; }
+    .title { font-size:13px; font-weight:700; fill:#b06000; text-anchor:middle; }
+  </style>
+
+  <!-- white background for a clean exported PNG -->
+  <rect x="0" y="0" width="940" height="840" fill="#ffffff"/>
+
+  <!-- ================= LEGEND ================= -->
+  <g>
+    <rect x="20" y="20" width="16" height="16" rx="3" class="box model"/>
+    <text x="44" y="29" font-size="12" fill="#3c4043" dominant-baseline="middle">local model</text>
+    <rect x="20" y="44" width="16" height="16" rx="3" class="box code"/>
+    <text x="44" y="53" font-size="12" fill="#3c4043" dominant-baseline="middle">deterministic code</text>
+    <rect x="20" y="68" width="16" height="16" rx="3" class="box mixed"/>
+    <text x="44" y="77" font-size="12" fill="#3c4043" dominant-baseline="middle">code + model</text>
+  </g>
+
+  <!-- ================= CENTRAL BLOCK (drawn first so edges/labels sit on top) ================= -->
+  <rect x="285" y="440" width="360" height="212" rx="14" fill="#fffdf2" stroke="#f9ab00" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <text class="title" x="465" y="459">Verification &amp; retry  (the hub)</text>
+
+  <!-- ================= EDGES ================= -->
+  <!-- top spine -->
+  <path class="edge" d="M470,64 L470,92"/>
+  <path class="edge" d="M470,140 L470,157"/>
+
+  <!-- triage -> refuse -->
+  <path class="edge" d="M410,205 C300,235 210,270 165,300"/>
+  <!-- triage -> generate (three distinct classification routes) -->
+  <path class="edge" d="M530,188 C640,210 700,250 748,300"/>
+  <path class="edge" d="M535,205 C660,240 720,270 762,300"/>
+  <path class="edge" d="M528,220 C650,272 730,286 772,302"/>
+
+  <!-- routes INTO the central block -->
+  <path class="edge" d="M165,352 C230,430 320,472 386,496"/>
+  <path class="edge" d="M765,354 C700,430 610,472 554,498"/>
+
+  <!-- inside: verify -> revise / safe_fail -->
+  <path class="edge" d="M490,530 C520,548 542,558 562,570"/>
+  <path class="edge" d="M450,530 C420,548 398,558 378,570"/>
+
+  <!-- routes AWAY from the central block -->
+  <path class="edge" d="M470,544 L470,731"/>
+  <path class="edge" d="M624,583 C716,516 770,428 772,358"/>
+  <path class="edge" d="M378,623 C404,678 432,704 452,729"/>
+
+  <!-- ================= EDGE LABELS ================= -->
+  <g>
+    <rect class="elabelbg" x="196" y="250" width="142" height="18"/>
+    <text class="elabel" x="267" y="260">out of scope / forbidden</text>
+    <rect class="elabelbg" x="612" y="214" width="84" height="18"/>
+    <text class="elabel" x="654" y="224">answerable</text>
+    <rect class="elabelbg" x="648" y="250" width="120" height="18"/>
+    <text class="elabel" x="708" y="260">needs clarification</text>
+    <rect class="elabelbg" x="636" y="286" width="128" height="18"/>
+    <text class="elabel" x="700" y="296">requires escalation</text>
+
+    <rect class="elabelbg" x="299" y="544" width="66" height="18"/>
+    <text class="elabel" x="332" y="554">fail again</text>
+    <rect class="elabelbg" x="568" y="544" width="72" height="18"/>
+    <text class="elabel" x="604" y="554">retry once</text>
+
+    <rect class="elabelbg" x="486" y="686" width="42" height="18"/>
+    <text class="elabel" x="507" y="696">pass</text>
+    <rect class="elabelbg" x="690" y="450" width="114" height="18"/>
+    <text class="elabel" x="747" y="460">regenerate once</text>
+  </g>
+
+  <!-- ================= NODES ================= -->
+  <!-- start -->
+  <rect x="370" y="24" width="200" height="40" rx="20" class="box done"/>
+  <text class="nlabel done-t" x="470" y="45">User asks a question</text>
+
+  <!-- retrieve -->
+  <rect x="398" y="92" width="144" height="48" rx="8" class="box model"/>
+  <text class="nlabel model-t" x="470" y="116">retrieve</text>
+
+  <!-- triage diamond -->
+  <polygon points="470,155 532,192 470,229 408,192" class="box mixed"/>
+  <text class="nlabel mixed-t" x="470" y="192">triage</text>
+
+  <!-- refuse -->
+  <rect x="98" y="303" width="134" height="50" rx="8" class="box code"/>
+  <text class="nlabel code-t" x="165" y="328">refuse</text>
+
+  <!-- generate -->
+  <rect x="690" y="303" width="152" height="52" rx="8" class="box model"/>
+  <text class="nlabel model-t" x="766" y="329">generate</text>
+
+  <!-- verify diamond (center of the hub) -->
+  <polygon points="470,466 528,503 470,540 412,503" class="box code"/>
+  <text class="nlabel code-t" x="470" y="503">verify</text>
+
+  <!-- safe_fail (left) -->
+  <rect x="300" y="573" width="132" height="50" rx="8" class="box code"/>
+  <text class="nlabel code-t" x="366" y="598">safe_fail</text>
+
+  <!-- revise (right) -->
+  <rect x="498" y="573" width="132" height="50" rx="8" class="box code"/>
+  <text class="nlabel code-t" x="564" y="598">revise &amp; retry</text>
+
+  <!-- return response -->
+  <rect x="370" y="733" width="200" height="42" rx="21" class="box done"/>
+  <text class="nlabel done-t" x="470" y="755">return response</text>
+</svg>

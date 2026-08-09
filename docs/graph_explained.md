@@ -4,8 +4,8 @@ The whole system is **one agent** built as a graph. A question enters, flows thr
 a fixed set of steps (nodes), and the arrows it follows depend on *what kind of
 request it is* and *whether the generated answer passes verification*.
 
-See [`graph_annotated.png`](graph_annotated.png) for the simple picture; this file
-is the detail behind each box and branch.
+See [`graph_diagram.png`](graph_diagram.png) for the picture; this file is the
+detail behind each box and branch.
 
 Color key: **green = deterministic code**, **blue = local model**, **amber = both**.
 

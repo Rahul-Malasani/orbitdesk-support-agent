@@ -31,7 +31,7 @@ The distinct path each request takes (green = deterministic code, blue = local
 model, amber = both). Full per-node detail in
 [`docs/graph_explained.md`](docs/graph_explained.md):
 
-![Annotated agent graph](docs/graph_annotated.png)
+![Annotated agent graph](docs/graph_diagram.png)
 
 ```
 START → retrieve → triage ─┬─(out_of_scope)→ refuse ─┐
